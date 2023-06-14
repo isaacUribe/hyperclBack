@@ -10,7 +10,7 @@ public class Zona {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_zona")
-    private Long idZona;
+    private Integer idZona;
     private String nombre;
     @Column(name = "volumen_maximo")
     private double volumenMaximo;
@@ -21,11 +21,11 @@ public class Zona {
     @Transient
     private String mensajeError;
 
-    public Long getIdZona() {
+    public Integer getIdZona() {
         return idZona;
     }
 
-    public void setIdZona(Long idZona) {
+    public void setIdZona(Integer idZona) {
         this.idZona = idZona;
     }
 

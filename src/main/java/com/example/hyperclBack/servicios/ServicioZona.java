@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 
 @Service
@@ -23,7 +24,16 @@ public class ServicioZona implements ServicioBase<Zona>{
 
     @Override
     public Zona buscarPorId(Integer id) throws Exception {
-        return null;
+        try{
+            Optional<Zona> zonaOptional = zonaRepositorio.findById(id);
+            if (zonaOptional.isPresent()){
+                return zonaOptional.get();
+            }else {
+                throw new Exception("Zona no encontrada");
+            }
+        }catch (Exception e){
+            throw new Exception(e.getMessage());
+        }
     }
 
     @Override
@@ -37,11 +47,34 @@ public class ServicioZona implements ServicioBase<Zona>{
 
     @Override
     public Zona actualizar(Integer id, Zona datosActualizar) throws Exception {
-        return null;
+        try {
+            Optional<Zona> zonaOptional = zonaRepositorio.findById(id);
+            if (zonaOptional.isPresent()){
+                Zona zonaExistente = zonaOptional.get();
+                zonaExistente.setNombre(datosActualizar.getNombre());
+                zonaExistente.setVolumenMaximo(datosActualizar.getVolumenMaximo());
+                Zona zonaActualizado = zonaRepositorio.save(zonaExistente);
+                return zonaActualizado;
+            }else {
+                throw new Exception("zona no encontrada");
+            }
+        }catch (Exception e){
+            throw new Exception(e.getMessage());
+        }
     }
 
     @Override
     public boolean eleminar(Integer id) throws Exception {
-        return false;
+        try {
+            Optional<Zona> zonaOptional = zonaRepositorio.findById(id);
+            if (zonaOptional.isPresent()){
+                zonaRepositorio.deleteById(id);
+                return true;
+            }else {
+                throw new Exception("zona no encontrada");
+            }
+        }catch (Exception e){
+            throw new Exception(e.getMessage());
+        }
     }
 }

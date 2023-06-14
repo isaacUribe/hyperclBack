@@ -10,7 +10,7 @@ public class Mercancia {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_mercancia")
-    private Long idMercancia;
+    private Integer idMercancia;
 
     private String nombre;
 
@@ -27,11 +27,11 @@ public class Mercancia {
     @Transient
     private String mensaje;
 
-    public Long getIdMercancia() {
+    public Integer getIdMercancia() {
         return idMercancia;
     }
 
-    public void setIdMercancia(Long idMercancia) {
+    public void setIdMercancia(Integer idMercancia) {
         this.idMercancia = idMercancia;
     }
 
