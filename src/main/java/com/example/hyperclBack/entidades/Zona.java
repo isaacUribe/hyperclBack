@@ -1,6 +1,7 @@
 package com.example.hyperclBack.entidades;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -15,7 +16,7 @@ public class Zona {
     @Column(name = "volumen_maximo")
     private double volumenMaximo;
     @OneToMany(mappedBy = "zona", cascade = CascadeType.ALL)
-    @JsonBackReference
+    @JsonManagedReference
     private List<Mercancia> mercancia;
 
     @Transient

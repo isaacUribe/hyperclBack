@@ -1,5 +1,7 @@
 package com.example.hyperclBack.entidades;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
@@ -22,7 +24,7 @@ public class Mercancia {
     private double volumenOcupa;
     @ManyToOne
     @JoinColumn(name = "id_zona")
-    @JsonManagedReference
+    @JsonBackReference
     private Zona zona;
     @Transient
     private String mensaje;
