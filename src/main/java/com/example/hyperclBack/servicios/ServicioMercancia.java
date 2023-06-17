@@ -2,39 +2,42 @@ package com.example.hyperclBack.servicios;
 
 import com.example.hyperclBack.Repositorios.MercanciaRepositorio;
 import com.example.hyperclBack.Repositorios.ZonaRepositorio;
+import com.example.hyperclBack.dto.MercanciaDto;
 import com.example.hyperclBack.entidades.Mercancia;
 import com.example.hyperclBack.entidades.Zona;
-import jakarta.persistence.criteria.CriteriaBuilder;
+import com.example.hyperclBack.mappers.MercanciaMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.awt.event.MouseWheelEvent;
 import java.util.List;
 import java.util.Optional;
 
 @Service
-public class ServicioMercancia implements ServicioBase<Mercancia>{
+public class ServicioMercancia implements ServicioBase<Mercancia, MercanciaDto>{
     @Autowired
     MercanciaRepositorio mercanciaRepositorio;
 
     @Autowired
     ZonaRepositorio zonaRepositorio;
 
+    @Autowired
+    MercanciaMapper mercanciaMapper;
+
     @Override
-    public List<Mercancia> buscarTodos() throws Exception {
+    public List<MercanciaDto> buscarTodos() throws Exception {
         try{
-            return mercanciaRepositorio.findAll();
+            return mercanciaMapper.toMercanciaDto(mercanciaRepositorio.findAll());
         }catch (Exception e){
             throw new Exception(e.getMessage());
         }
     }
 
     @Override
-    public Mercancia buscarPorId(Integer id) throws Exception {
+    public MercanciaDto buscarPorId(Integer id) throws Exception {
         try {
             Optional<Mercancia> mercanciaOptional = mercanciaRepositorio.findById(id);
             if (mercanciaOptional.isPresent()){
-                return mercanciaOptional.get();
+                return mercanciaMapper.toMercanciaDto(mercanciaOptional.get());
             }else {
                 throw new Exception("Mercancia no encontrada");
             }
@@ -44,7 +47,7 @@ public class ServicioMercancia implements ServicioBase<Mercancia>{
     }
 
     @Override
-    public Mercancia registrar(Mercancia datosARegistrar) throws Exception {
+    public MercanciaDto registrar(Mercancia datosARegistrar) throws Exception {
         try {
             int idZona = datosARegistrar.getZona().getIdZona();
             Optional<Zona> zonaOptional = zonaRepositorio.findById(idZona);
@@ -55,13 +58,16 @@ public class ServicioMercancia implements ServicioBase<Mercancia>{
             }else {
                 throw new Exception("No hay espacio en la zona");
             }
-            return  mercanciaRepositorio.save(datosARegistrar);
+            mercanciaRepositorio.save(datosARegistrar);
+            MercanciaDto mercanciaDto = mercanciaMapper.toMercanciaDto(datosARegistrar);
+            return  mercanciaDto;
         }catch (Exception e){
             throw new Exception(e.getMessage());
         }}
 
+
     @Override
-    public Mercancia actualizar(Integer id, Mercancia datosActualizar) throws Exception {
+    public MercanciaDto actualizar(Integer id, Mercancia datosActualizar) throws Exception {
         try{
             Optional<Mercancia>mercanciaOptional =mercanciaRepositorio.findById(id);
             if(mercanciaOptional.isPresent()){
@@ -73,7 +79,7 @@ public class ServicioMercancia implements ServicioBase<Mercancia>{
                 mercanciaPresente.setVolumenOcupa(datosActualizar.getVolumenOcupa());
 
                 Mercancia mercanciaActualizada=mercanciaRepositorio.save(mercanciaPresente);
-                return mercanciaActualizada;
+                return mercanciaMapper.toMercanciaDto(mercanciaActualizada);
             }else{
                 throw new Exception("Usuario no encontrado");
             }

@@ -1,5 +1,7 @@
 package com.example.hyperclBack.controladores;
 
+import com.example.hyperclBack.dto.ZonaDto;
+import com.example.hyperclBack.dto.ZonaDtoError;
 import com.example.hyperclBack.entidades.Zona;
 import com.example.hyperclBack.servicios.ServicioZona;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,43 +21,47 @@ public class ZonaControlador {
     ServicioZona servicioZona;
 
     @PostMapping
-    public ResponseEntity<Zona> registrar(@RequestBody Zona zona){
+    public ResponseEntity<ZonaDto> registrar(@RequestBody Zona zona){
         try {
             return ResponseEntity.status(HttpStatus.CREATED).body(servicioZona.registrar(zona));
 
         }catch (Exception e){
             String mensaje = "Tenemos un error al ingresar los datos" + e.getMessage();
-            Zona zonaError = new Zona();
-            zonaError.setMensajeError(mensaje);
+            ZonaDtoError zonaError = new ZonaDtoError();
+            zonaError.setMensaje(mensaje);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(zonaError);
         }
     }
 
     @GetMapping
-    public ResponseEntity<List<Zona>> buscarTodos (){
+    public ResponseEntity<List<ZonaDto>> buscarTodos (){
         try{
             return ResponseEntity.status(HttpStatus.OK).body(servicioZona.buscarTodos());
         }catch (Exception e){
             String mensaje = "Tenemos un error al momento de traer los datos" + e.getMessage();
-            Zona zonaError = new Zona();
-            zonaError.setMensajeError(mensaje);
+            ZonaDtoError zonaError = new ZonaDtoError();
+            zonaError.setMensaje(mensaje);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Arrays.asList(zonaError));
         }
     }
     @GetMapping("/{id}")
-    public ResponseEntity<Zona> buscarPorId (@PathVariable Integer id){
+    public ResponseEntity<ZonaDto> buscarPorId (@PathVariable Integer id){
         try{
             return ResponseEntity.status(HttpStatus.OK).body(servicioZona.buscarPorId(id));
         }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+            ZonaDtoError zonaDtoError = new ZonaDtoError();
+            zonaDtoError.setMensaje(e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(zonaDtoError);
         }
     }
     @PutMapping("/{id}")
-    public ResponseEntity<Zona> actualizar(@PathVariable Integer id, @RequestBody Zona zona){
+    public ResponseEntity<ZonaDto> actualizar(@PathVariable Integer id, @RequestBody Zona zona){
         try{
             return ResponseEntity.status(HttpStatus.OK).body(servicioZona.actualizar(id, zona));
         }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+            ZonaDtoError zonaDtoError = new ZonaDtoError();
+            zonaDtoError.setMensaje(e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(zonaDtoError);
         }
     }
     @DeleteMapping("/{id}")
@@ -63,7 +69,7 @@ public class ZonaControlador {
         try{
             return ResponseEntity.status(HttpStatus.OK).body(servicioZona.eleminar(id));
         }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(false);
         }
     }
 }

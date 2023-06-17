@@ -12,8 +12,8 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface MercanciaMapper {
 
-    @Mapping(source = "mensaje",  target = "mensaje")
-    MercanciaDtoError toMercanciaDtoError (Mercancia mercancia);
+//    @Mapping(source = "mensaje",  target = "mensaje")
+//    MercanciaDtoError toMercanciaDtoError (Mercancia mercancia);
 
 
     @Mappings({
