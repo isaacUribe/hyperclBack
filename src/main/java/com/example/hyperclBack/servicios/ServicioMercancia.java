@@ -1,7 +1,9 @@
 package com.example.hyperclBack.servicios;
 
 import com.example.hyperclBack.Repositorios.MercanciaRepositorio;
+import com.example.hyperclBack.Repositorios.ZonaRepositorio;
 import com.example.hyperclBack.entidades.Mercancia;
+import com.example.hyperclBack.entidades.Zona;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,6 +16,9 @@ import java.util.Optional;
 public class ServicioMercancia implements ServicioBase<Mercancia>{
     @Autowired
     MercanciaRepositorio mercanciaRepositorio;
+
+    @Autowired
+    ZonaRepositorio zonaRepositorio;
 
     @Override
     public List<Mercancia> buscarTodos() throws Exception {
@@ -41,6 +46,15 @@ public class ServicioMercancia implements ServicioBase<Mercancia>{
     @Override
     public Mercancia registrar(Mercancia datosARegistrar) throws Exception {
         try {
+            int idZona = datosARegistrar.getZona().getIdZona();
+            Optional<Zona> zonaOptional = zonaRepositorio.findById(idZona);
+            Zona zona = zonaOptional.get();
+            if (zona.getVolumenMaximo()>datosARegistrar.getVolumenOcupa()){
+                zona.setVolumenMaximo(zona.getVolumenMaximo()-datosARegistrar.getVolumenOcupa());
+                zonaRepositorio.save(zona);
+            }else {
+                throw new Exception("No hay espacio en la zona");
+            }
             return  mercanciaRepositorio.save(datosARegistrar);
         }catch (Exception e){
             throw new Exception(e.getMessage());
