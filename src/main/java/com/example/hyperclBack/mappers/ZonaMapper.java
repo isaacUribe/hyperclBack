@@ -12,7 +12,8 @@ import java.util.List;
 public interface ZonaMapper {
     @Mappings({
             @Mapping(source = "nombre", target = "nombre"),
-            @Mapping(source = "volumenMaximo", target = "volumenMaximo")
+            @Mapping(source = "volumenMaximo", target = "volumenMaximo"),
+            @Mapping(source = "mercancia", target = "mercancias")
     })
     ZonaDto toZonaDto (Zona zona);
     List<ZonaDto> toZonasDto (List<Zona> zonas);

@@ -77,6 +77,16 @@ public class ServicioMercancia implements ServicioBase<Mercancia, MercanciaDto>{
                 mercanciaPresente.setFecha(datosActualizar.getFecha());
                 mercanciaPresente.setMotivoDevolucion(datosActualizar.getMotivoDevolucion());
                 mercanciaPresente.setVolumenOcupa(datosActualizar.getVolumenOcupa());
+                int idZona = mercanciaPresente.getZona().getIdZona();
+                Optional<Zona> zonaOptional = zonaRepositorio.findById(idZona);
+                Zona zona = zonaOptional.get();
+                if (zona.getVolumenMaximo()>datosActualizar.getVolumenOcupa()){
+                    zona.setVolumenMaximo(zona.getVolumenMaximo()-datosActualizar.getVolumenOcupa());
+                    zonaRepositorio.save(zona);
+                }else {
+                    throw new Exception("No hay espacio en la zona");
+                }
+
 
                 Mercancia mercanciaActualizada=mercanciaRepositorio.save(mercanciaPresente);
                 return mercanciaMapper.toMercanciaDto(mercanciaActualizada);
@@ -93,7 +103,14 @@ public class ServicioMercancia implements ServicioBase<Mercancia, MercanciaDto>{
     public boolean eleminar(Integer id) throws Exception {
         try {
             Optional<Mercancia> mercanciaOptional = mercanciaRepositorio.findById(id);
+
+
             if (mercanciaOptional.isPresent()){
+                Mercancia mercanciaPresente=mercanciaOptional.get();
+                int idZona = mercanciaPresente.getZona().getIdZona();
+                Optional<Zona> zonaOptional = zonaRepositorio.findById(idZona);
+                Zona zona = zonaOptional.get();
+                zona.setVolumenMaximo(zona.getVolumenMaximo()+mercanciaPresente.getVolumenOcupa());
                 mercanciaRepositorio.deleteById(id);
                 return true;
             }else {
